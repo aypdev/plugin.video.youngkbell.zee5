@@ -47,7 +47,7 @@ class Zee5Plugin(object):
 
         # Static data
         # self._auth = Zee5Plugin._auth_key()
-        self.platform = 'android_tv'
+        self.platform = 'web_app'
         self.session = requests.Session()
 
         # Initialise the token.
