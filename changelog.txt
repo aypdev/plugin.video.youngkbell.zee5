@@ -3,3 +3,6 @@ v0.0.1
 
 v1.0.0
 - Complete plugin
+
+v2.0.0
+- Language filter
