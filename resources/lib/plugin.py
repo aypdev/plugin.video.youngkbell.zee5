@@ -1,8 +1,9 @@
 # -*- coding: utf-8 -*-
 import logging
 import xbmcaddon
-from resources.lib import kodilogging
-from resources.lib import kodiutils
+from . import kodilogging
+from . import kodiutils
+from . import settings
 
 import sys
 
@@ -20,17 +21,11 @@ import requests
 import itertools
 import operator
 
-
-import hashlib
-import hmac
-
 import time
-import re
-import os
 
 ADD_ON = xbmcaddon.Addon()
 logger = logging.getLogger(ADD_ON.getAddonInfo('id'))
-kodilogging.config()
+kodilogging.config(logger)
 
 
 class Zee5Plugin(object):
@@ -46,8 +41,8 @@ class Zee5Plugin(object):
         self.params = dict(parse_qsl(plugin_args[2][1:]))
 
         # Static data
-        # self._auth = Zee5Plugin._auth_key()
         self.platform = 'web_app'
+        self.languages = settings.get_languages()
         self.session = requests.Session()
 
         # Initialise the token.
@@ -68,26 +63,6 @@ class Zee5Plugin(object):
             headers["X-ACCESS-TOKEN"] = self.token
 
         return headers
-
-    @staticmethod
-    def _auth_key():
-        def keygen(t):
-            e = ""
-            n = 0
-            while len(t) > n:
-                r = t[n] + t[n + 1]
-                o = int(re.sub(r"[^a-f0-9]", "", r + "", re.IGNORECASE), 16)
-                e += chr(o)
-                n += 2
-
-            return e
-
-        start = int(time.time())
-        expiry = start + 6000
-        message = "st={}~exp={}~acl=/*".format(start, expiry)
-        secret = keygen("05fc1a01cac94bc412fc53120775f9ee")
-        signature = hmac.new(secret, message, digestmod=hashlib.sha256).hexdigest()
-        return '{}~hmac={}'.format(message, signature)
 
     def _get_video_token(self):
         data = self.make_request('https://useraction.zee5.com/tokennd/')
@@ -145,10 +120,11 @@ class Zee5Plugin(object):
         xbmcplugin.setPluginCategory(self.handle, manual_name)
 
         data = self.make_request(
-            'https://gwapi.zee5.com/content/collection/{}?page={}&limit={}&translation=en&version=3'.format(
-                manual_id,
-                page_number,
-                Zee5Plugin.ITEMS_LIMIT
+            'https://gwapi.zee5.com/content/collection/{id}?page={page}&limit={limit}&languages={lang}&translation=en&version=3'.format(
+                id=manual_id,
+                page=page_number,
+                limit=Zee5Plugin.ITEMS_LIMIT,
+                lang=self.languages
             )
         )
 
@@ -237,10 +213,11 @@ class Zee5Plugin(object):
         xbmcplugin.setPluginCategory(self.handle, collection_name)
 
         data = self.make_request(
-            'https://gwapi.zee5.com/content/collection/{}?page={}&limit={}&item_limit=1&version=3'.format(
-                collection_id,
-                page_number,
-                Zee5Plugin.ITEMS_LIMIT
+            'https://gwapi.zee5.com/content/collection/{id}?page={page}&limit={limit}&item_limit=1&languages={lang}&version=3'.format(
+                id=collection_id,
+                page=page_number,
+                limit=Zee5Plugin.ITEMS_LIMIT,
+                lang=self.languages,
             )
         )
         for bucket in data['buckets'] or []:

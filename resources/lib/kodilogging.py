@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 
 from __future__ import unicode_literals
-from resources.lib.kodiutils import get_setting_as_bool
+from .kodiutils import get_setting_as_bool
 
 import logging
 import xbmc
@@ -37,7 +37,6 @@ class KodiLogHandler(logging.StreamHandler):
         pass
 
 
-def config():
-    logger = logging.getLogger()
+def config(logger):
     logger.addHandler(KodiLogHandler())
     logger.setLevel(logging.DEBUG)
