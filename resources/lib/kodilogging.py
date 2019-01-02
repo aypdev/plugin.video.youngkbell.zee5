@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 
 from __future__ import unicode_literals
-from .kodiutils import get_setting_as_bool
+from . import settings
 
 import logging
 import xbmc
@@ -26,7 +26,7 @@ class KodiLogHandler(logging.StreamHandler):
             logging.DEBUG: xbmc.LOGDEBUG,
             logging.NOTSET: xbmc.LOGNONE,
         }
-        if get_setting_as_bool('debug'):
+        if settings.is_debug():
             try:
                 xbmc.log(self.format(record), levels[record.levelno])
             except UnicodeEncodeError:

@@ -11,3 +11,7 @@ def get_languages():
     return ','.join([
         lang for lang in LANGUAGES if get_setting_as_bool(lang)
     ]) or DEFAULT_LANGUAGES
+
+
+def is_debug():
+    return get_setting_as_bool('debug')

@@ -128,6 +128,11 @@ class Zee5Plugin(object):
             )
         )
 
+        if not data['buckets']:
+            logger.warn('Buckets data is empty for manual! -- {}'.format(data))
+            kodiutils.notification('No items found', 'Check logs for api content!')
+            return
+
         for item in data['buckets'][0]['items']:
             # {
             #      "id": "0-0-16460",
@@ -196,6 +201,12 @@ class Zee5Plugin(object):
 
             elif subtype not in ['external_link']:
                 logger.warn(u'Skipping rendering sub-type from item - {}: {}'.format(subtype, item))
+                if settings.is_debug():
+                    kodiutils.notification(
+                        'Unhandled asset type!',
+                        '{}'.format(subtype),
+                        icon=xbmcgui.NOTIFICATION_WARNING,
+                    )
 
         self.add_next_page_and_search_item(
             item=data, original_title=manual_name, action='manual'
