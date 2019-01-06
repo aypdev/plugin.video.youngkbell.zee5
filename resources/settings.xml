@@ -14,7 +14,7 @@
     </category>
 
     <category label="General">
-        <setting id="debug" type="bool" label="Enable Debug Mode?" default="false" />
+        <setting id="debug" type="bool" label="Enable Debug Logs?" default="false" />
     </category>
 
 </settings>
