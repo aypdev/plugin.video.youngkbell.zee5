@@ -74,28 +74,38 @@ class Zee5Plugin(object):
         )
         return data['token']
 
-    def list_season(self, season_id, season_name):
+    def list_season(self, season_id, page_number, season_name):
         # Set plugin category. It is displayed in some skins as the name
         # of the current section.
         xbmcplugin.setPluginCategory(self.handle, season_name)
 
-        data = self.make_request("https://gwapi.zee5.com/content/season/{}".format(season_id))
+        data = self.make_request("https://gwapi.zee5.com/content/season/{id}?page={page}&limit={limit}".format(
+            id=season_id,
+            page=page_number,
+            limit=Zee5Plugin.ITEMS_LIMIT,
+        ))
         for episode in data['episode']:
             self.add_video_item(episode)
 
-        self.add_search_item()
+        self.add_next_page_and_search_item(
+            item=data, original_title=season_name, action='season'
+        )
 
         # Add a sort method for the virtual folder items (alphabetically, ignore articles)
         xbmcplugin.addSortMethod(self.handle, xbmcplugin.SORT_METHOD_NONE)
         # Finish creating a virtual folder.
         xbmcplugin.endOfDirectory(self.handle)
 
-    def list_show(self, show_id, show_name):
+    def list_show(self, show_id, page_number, show_name):
         # Set plugin category. It is displayed in some skins as the name
         # of the current section.
         xbmcplugin.setPluginCategory(self.handle, show_name)
 
-        data = self.make_request("https://gwapi.zee5.com/content/tvshow/{}".format(show_id))
+        data = self.make_request("https://gwapi.zee5.com/content/tvshow/{id}?page={page}&limit={limit}".format(
+            id=show_id,
+            page=page_number,
+            limit=Zee5Plugin.ITEMS_LIMIT,
+        ))
         for season in data['seasons']:
             self.add_directory_item(
                 content_id=season['id'],
@@ -106,7 +116,7 @@ class Zee5Plugin(object):
                 item=season
             )
 
-        self.add_search_item()
+        self.add_next_page_and_search_item(item=data, original_title=show_name, action='show')
 
         # Add a sort method for the virtual folder items (alphabetically, ignore articles)
         xbmcplugin.addSortMethod(self.handle, xbmcplugin.SORT_METHOD_NONE)
@@ -644,10 +654,10 @@ class Zee5Plugin(object):
                 self.list_manual(content_id, page_number, title)
 
             elif action == 'show':
-                self.list_show(content_id, title)
+                self.list_show(content_id, page_number, title)
 
             elif action == 'season':
-                self.list_season(content_id, title)
+                self.list_season(content_id, page_number, title)
 
             elif action == 'play':
                 self.play_video(content_id)
