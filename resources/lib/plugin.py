@@ -79,7 +79,7 @@ class Zee5Plugin(object):
         # of the current section.
         xbmcplugin.setPluginCategory(self.handle, season_name)
 
-        data = self.make_request("https://gwapi.zee5.com/content/season/{id}?page={page}&limit={limit}".format(
+        data = self.make_request("https://gwapi.zee5.com/content/season/{id}?country=US&page={page}&limit={limit}".format(
             id=season_id,
             page=page_number,
             limit=Zee5Plugin.ITEMS_LIMIT,
@@ -101,7 +101,7 @@ class Zee5Plugin(object):
         # of the current section.
         xbmcplugin.setPluginCategory(self.handle, show_name)
 
-        data = self.make_request("https://gwapi.zee5.com/content/tvshow/{id}?page={page}&limit={limit}".format(
+        data = self.make_request("https://gwapi.zee5.com/content/tvshow/{id}?country=US&page={page}&limit={limit}".format(
             id=show_id,
             page=page_number,
             limit=Zee5Plugin.ITEMS_LIMIT,
@@ -130,7 +130,7 @@ class Zee5Plugin(object):
         xbmcplugin.setPluginCategory(self.handle, manual_name)
 
         data = self.make_request(
-            'https://gwapi.zee5.com/content/collection/{id}?page={page}&limit={limit}&languages={lang}&translation=en&version=3'.format(
+            'https://gwapi.zee5.com/content/collection/{id}?country=US&page={page}&limit={limit}&languages={lang}&translation=en&version=3'.format(
                 id=manual_id,
                 page=page_number,
                 limit=Zee5Plugin.ITEMS_LIMIT,
@@ -234,7 +234,7 @@ class Zee5Plugin(object):
         xbmcplugin.setPluginCategory(self.handle, collection_name)
 
         data = self.make_request(
-            'https://gwapi.zee5.com/content/collection/{id}?page={page}&limit={limit}&item_limit=1&languages={lang}&version=3'.format(
+            'https://gwapi.zee5.com/content/collection/{id}?country=US&page={page}&limit={limit}&item_limit=1&languages={lang}&version=3'.format(
                 id=collection_id,
                 page=page_number,
                 limit=Zee5Plugin.ITEMS_LIMIT,
@@ -304,7 +304,7 @@ class Zee5Plugin(object):
         # of the current section.
         xbmcplugin.setPluginCategory(self.handle, 'Collections')
 
-        data = self.make_request('https://b2bapi.zee5.com/front/countrylist.php?lang=en&ccode=CA')
+        data = self.make_request('https://b2bapi.zee5.com/front/countrylist.php?lang=en&ccode=US')
         for name, collection_id in data[0]['collections'][self.platform].iteritems():
             # "web_app": {
             #     "home": "0-8-homepage",
@@ -349,7 +349,7 @@ class Zee5Plugin(object):
         # of the current section.
         xbmcplugin.setPluginCategory(self.handle, 'Search/{}'.format(query))
 
-        url = 'https://gwapi.zee5.com/content/getContent/autoSuggest?q={}&limit={}&translation=en&languages=hi,ta,en&country=CA&version=1'.format(
+        url = 'https://gwapi.zee5.com/content/getContent/autoSuggest?country=US&q={}&limit={}&translation=en&languages=hi,ta,en&country=CA&version=1'.format(
             quote(query),
             Zee5Plugin.ITEMS_LIMIT
         )
