@@ -304,7 +304,7 @@ class Zee5Plugin(object):
         # of the current section.
         xbmcplugin.setPluginCategory(self.handle, 'Collections')
 
-        data = self.make_request('https://b2bapi.zee5.com/front/countrylist.php?lang=en&ccode=US')
+        data = self.make_request('https://b2bapi.zee5.com/front/countrylist.php?lang=en&ccode=CA')
         for name, collection_id in data[0]['collections'][self.platform].iteritems():
             # "web_app": {
             #     "home": "0-8-homepage",
