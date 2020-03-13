@@ -27,6 +27,8 @@ ADD_ON = xbmcaddon.Addon()
 logger = logging.getLogger(ADD_ON.getAddonInfo('id'))
 kodilogging.config(logger)
 
+USER_AGENT = 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_2) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/71.0.3578.80 Safari/537.36'
+
 
 class Zee5Plugin(object):
     ITEMS_LIMIT = 25
@@ -51,7 +53,7 @@ class Zee5Plugin(object):
     def _get_headers(self):
         headers = {
             "Origin": "https://www.zee5.com",
-            "User-Agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_2) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/71.0.3578.80 Safari/537.36",
+            "User-Agent": USER_AGENT,
             "Accept": "*/*",
             "Referer": "https://www.zee5.com",
             "Accept-Encoding": "gzip, deflate, br",
@@ -304,7 +306,7 @@ class Zee5Plugin(object):
         # of the current section.
         xbmcplugin.setPluginCategory(self.handle, 'Collections')
 
-        data = self.make_request('https://b2bapi.zee5.com/front/countrylist.php?lang=en&ccode=CA')
+        data = self.make_request('https://b2bapi.zee5.com/front/countrylist.php?lang=en&ccode=US')
         for name, collection_id in data[0]['collections'][self.platform].iteritems():
             # "web_app": {
             #     "home": "0-8-homepage",
@@ -456,6 +458,7 @@ class Zee5Plugin(object):
 
         # Add our item to the Kodi virtual folder listing.
         xbmcplugin.addDirectoryItem(self.handle, url, list_item, is_folder)
+        xbmcplugin.setContent(self.handle, 'video')
 
     def add_directory_item(
         self,
@@ -609,9 +612,10 @@ class Zee5Plugin(object):
             token = self._get_video_token()
             # PRIORITY1080/PROMOS/December/13122018/WhatsupVel_Trailer_WN_PF_13122018NEW.mp4/
             # index.m3u8?token
-            return 'https://zee5vodnd.akamaized.net/{url}{token}'.format(
+            return 'https://zee5vodnd.akamaized.net/{url}{token}|{user_agent}'.format(
                 url=hls_url.replace('/drm', '/hls'),
-                token=token
+                token=token,
+                user_agent=urlencode({'User-Agent': USER_AGENT})
             )
 
         data = self.make_request('https://gwapi.zee5.com/content/details/{}?translation=en'.format(item_id))
